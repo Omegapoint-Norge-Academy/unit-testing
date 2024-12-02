@@ -1,22 +1,17 @@
 using ConsumerBank.Services;
-using ConsumerBank.Services.Options;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddTransient<ILoanerService, LoanerService>();
-builder.Services.AddTransient<IDatabase, Database>();
-builder.Services.AddSingleton(_ =>
-{
-    var database = builder.Configuration.GetValue<string>(nameof(DbOptions.Database))!;
-    var userName = builder.Configuration.GetValue<string>(nameof(DbOptions.DbUsername))!;
-    var password = builder.Configuration.GetValue<string>(nameof(DbOptions.DbPassword))!;
-
-    if (string.IsNullOrEmpty(database) || string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
-        throw new ArgumentException("Missing database settings");
-    return new DbOptions(database, userName, password);
-});
+builder.Services.AddTransient<IDatabase, DatabaseContext>();
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("ConsumerBankDb"));
+    }
+);
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
