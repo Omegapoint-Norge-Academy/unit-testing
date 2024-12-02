@@ -1,6 +1,7 @@
 using ConsumerBank.Services.Contracts;
 using ConsumerBank.Services.DbObjects;
 using Moq;
+using RandomTestValues;
 using Xunit;
 
 namespace ConsumerBank.Services.UnitTests
@@ -24,11 +25,8 @@ namespace ConsumerBank.Services.UnitTests
         public async Task Apply_ValidRequest_ShouldReturnCreditEvaluationResult(int amount, bool expectedEvaluationResult)
         {
             // Arrange
-            var request = new LoanRequest
-            {
-                Person = new Person { FirstName = "Andreas" },
-                Amount = amount
-            };
+            var request = RandomValue.Object<LoanRequest>();
+            request.Amount = amount;
             
             // Act
             var actualResult = await _service.Apply(request);
@@ -46,10 +44,7 @@ namespace ConsumerBank.Services.UnitTests
         public async Task Apply_ValidPersonData_PersonIsStoredInDb()
         {
             // Arrange
-            var request = new LoanRequest
-            {
-                Person = new Person { FirstName = "Andreas" }
-            };
+            var request = RandomValue.Object<LoanRequest>();
 
             // Act
             await _service.Apply(request);
@@ -62,14 +57,7 @@ namespace ConsumerBank.Services.UnitTests
         public async Task Apply_ValidPersonData_AddressIsStoredInDb()
         {
             // Arrange
-            var request = new LoanRequest
-            {
-                Person = new Person
-                {
-                    CustomerAddress = new Address { Street = "Storgata 42" }
-                },
-                Amount = 100
-            };
+            var request = RandomValue.Object<LoanRequest>();
 
             // Act
             await _service.Apply(request);
@@ -82,19 +70,19 @@ namespace ConsumerBank.Services.UnitTests
         public async Task Apply_ValidPersonData_LoanWasUpdated()
         {
             // Arrange
-            SetupPersonIdReturned(42);
+            var personId = RandomValue.Int(minPossibleValue: 1);
+            SetupPersonIdReturned(personId);
 
-            var request = new LoanRequest
-            {
-                Person = new Person(),
-                Amount = 100
-            };
+            // Lar RandomValue.Object populere alt, og presiserer så de parameterene som har direkte påvirkning på testresultatet.
+            var request = RandomValue.Object<LoanRequest>();
+            request.Person.Id = personId;
+            request.Amount = 100;
 
             // Act
             await _service.Apply(request);
 
             // Assert
-            AssertLoanWasUpdated(42, request.Amount);
+            AssertLoanWasUpdated(personId, request.Amount);
         }
 
         private void AssertLoanWasUpdated(int personId, int requestAmount)
