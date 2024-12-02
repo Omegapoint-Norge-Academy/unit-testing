@@ -1,15 +1,13 @@
-﻿using System.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ConsumerBank.Services.DbObjects;
-using Microsoft.Data.SqlClient;
-using ConsumerBank.Services.Options;
 
 namespace ConsumerBank.Services;
 
 public interface IDatabase
 {
     Task<int> SavePerson(PersonEntity person);
+    Task<PersonEntity?> GetPerson(int id);
     Task SaveAddress(AddressEntity address);
     Task UpdateLoan(int personId, decimal amount);
 }
@@ -46,6 +44,11 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
         Persons.Add(person);
         await SaveChangesAsync();
         return person.Id;
+    }
+
+    public async Task<PersonEntity?> GetPerson(int id)
+    {
+        return await Persons.FindAsync(id);
     }
 
     public async Task SaveAddress(AddressEntity address)

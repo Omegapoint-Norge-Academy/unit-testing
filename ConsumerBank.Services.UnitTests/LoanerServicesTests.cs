@@ -17,29 +17,30 @@ namespace ConsumerBank.Services.UnitTests
         }
 
         // Bruker [Theory] i steden for [Fact] fordi Theory lar deg angi input-parametere med InlineData-attributter.
-        // Tester for b�de true og false for � verifisere at det er resultatet fra creditProvider som returneres.
+        // Tester for både true og false for å verifisere at det er resultatet fra creditProvider som returneres.
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task Apply_ValidRequest_ShouldReturnCreditEvaluationResult(bool evaluationResult)
+        [InlineData(1000, true)]
+        [InlineData(90000000, false)]
+        public async Task Apply_ValidRequest_ShouldReturnCreditEvaluationResult(int amount, bool expectedEvaluationResult)
         {
             // Arrange
             var request = new LoanRequest
             {
-                Person = new Person { FirstName = "Andreas" }
+                Person = new Person { FirstName = "Andreas" },
+                Amount = amount
             };
-
+            
             // Act
             var actualResult = await _service.Apply(request);
 
             // Assert
-            Assert.Equal(evaluationResult, actualResult);
+            Assert.Equal(expectedEvaluationResult, actualResult);
         }
 
         // Merk at alle tester er delt i 3:
         // Arrange - inneholder all kode for oppsett.
         // Act - trigger koden som skal testes. Typisk bare en linje kode her.
-        // Assert - her er alle Assert og Verify-statements. I denne delen avgj�res det om testen har feilet eller ikke.
+        // Assert - her er alle Assert og Verify-statements. I denne delen avgjøres det om testen har feilet eller ikke.
 
         [Fact]
         public async Task Apply_ValidPersonData_PersonIsStoredInDb()
@@ -110,7 +111,7 @@ namespace ConsumerBank.Services.UnitTests
 
         private void AssertAddressWasSaved(string street)
         {
-            // Kan legge til sjekk p� flere adresseparametere her om �nskelig.
+            // Kan legge til sjekk på flere adresseparametere her om ønskelig.
             _databaseServiceMock.Verify(x => x.SaveAddress(It.Is<AddressEntity>(address => address.Street == street)));
         }
 

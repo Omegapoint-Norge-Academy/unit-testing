@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsumerBank.Services.UnitT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsumerBankApi.RegressionTests", "ConsumerBankApi.RegressionTests\ConsumerBankApi.RegressionTests.csproj", "{4A7CF9D0-099D-4206-AB34-F38838286819}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8F3CD1B5-1ACA-4D5F-9198-BA7E1D914D1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E6E388B6-B90B-4A4A-89EF-0873507E6619} = {8F3CD1B5-1ACA-4D5F-9198-BA7E1D914D1C}
+		{2DDDD3D4-3947-414A-BFCF-20341E0865DA} = {8F3CD1B5-1ACA-4D5F-9198-BA7E1D914D1C}
+		{4A7CF9D0-099D-4206-AB34-F38838286819} = {8F3CD1B5-1ACA-4D5F-9198-BA7E1D914D1C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1116FD50-237E-481F-A629-12BC025E663D}
