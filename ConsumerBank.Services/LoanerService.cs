@@ -16,23 +16,31 @@ namespace ConsumerBank.Services
         public async Task<bool> Apply(LoanRequest request)
         {
             var accepted = CreditProvider.Evaluate(request);
-            var personId = await _database.SavePerson(new PersonEntity
+            var existingCustomer = await _database.GetPerson(request.Person.Id);
+            int personId;
+            if (existingCustomer == null)
             {
-                FirstName = request.Person.FirstName,
-                LastName = request.Person.LastName,
-                SocialSecurityNumber = request.Person.SocialSecurityNumber
-            });
+                personId = await _database.SavePerson(new PersonEntity
+                {
+                    FirstName = request.Person.FirstName,
+                    LastName = request.Person.LastName,
+                    SocialSecurityNumber = request.Person.SocialSecurityNumber
+                });
 
-            await _database.SaveAddress(new AddressEntity
-            {
-                City = request.Person.CustomerAddress.City,
-                Country = request.Person.CustomerAddress.Country,
-                Street = request.Person.CustomerAddress.Street,
-                Zip = request.Person.CustomerAddress.Zip,
-                PersonId = personId
-            });
+                await _database.SaveAddress(new AddressEntity
+                {
+                    City = request.Person.CustomerAddress.City,
+                    Country = request.Person.CustomerAddress.Country,
+                    Street = request.Person.CustomerAddress.Street,
+                    Zip = request.Person.CustomerAddress.Zip,
+                    PersonId = personId
+                });
+            }
+            else 
+                personId = existingCustomer.Id;
 
-            await _database.UpdateLoan(personId, request.Amount);
+            if (accepted)
+                await _database.UpdateLoan(personId, request.Amount);
 
             return accepted;
         }

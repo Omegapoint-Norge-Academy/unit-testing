@@ -6,6 +6,6 @@
         public string FirstName { get; set; } = "";
         public string LastName { get; set; } = "";
         public Address CustomerAddress { get; set; } = new Address();
-
+        public int Id { get; set; }
     }
 }
